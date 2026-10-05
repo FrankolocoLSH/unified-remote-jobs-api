@@ -1,5 +1,5 @@
 """Parser unit tests — all inputs are REAL recorded API responses
-(tests/fixtures/*.json, captured live 2026-09-18). No invented payload data.
+(tests/fixtures/*.json, captured live 2026-10-05). No invented payload data.
 """
 import json
 import os
@@ -27,19 +27,19 @@ def test_parse_remoteok_skips_legal_notice_and_normalizes():
         assert j["remote"] is True
     # spot-check the real first job in the fixture
     first = jobs[0]
-    assert first["title"] == "Sr Solutions Architect"
-    assert first["company"] == "ExtraHop"
+    assert first["title"] == "Federal Business Development Director"
+    assert first["company"] == "Fortanix"
     assert first["url"].startswith("https://")
 
 
 def test_parse_remoteok_zero_salary_becomes_none():
     jobs = scrapers.parse_remoteok(load("remoteok_sample.json"))
-    # fixture: five jobs carry salary_min/max = 0 (unknown) -> None ...
+    # fixture: four jobs carry salary_min/max = 0 (unknown) -> None ...
     unknowns = [j for j in jobs if j["salary_min"] is None]
-    assert len(unknowns) == 5
-    # ... while the one real salary in the fixture is preserved exactly
+    assert len(unknowns) == 4
+    # ... while the real salaries in the fixture are preserved exactly
     known = [j for j in jobs if j["salary_min"] is not None][0]
-    assert (known["salary_min"], known["salary_max"]) == (190000, 220000)
+    assert (known["salary_min"], known["salary_max"]) == (170000, 350000)
 
 
 # ------------------------------------------------------------- Remotive ---
@@ -51,8 +51,8 @@ def test_parse_remotive_normalizes():
         assert j["title"] and j["company"] and j["url"]
         assert j["posted_at"]
     first = jobs[0]
-    assert first["title"] == "Senior Data Scientist"
-    assert first["company"] == "Lemon.io"
+    assert first["title"] == "Freelance Copywriter"
+    assert first["company"] == "Coalition Technologies"
 
 
 def test_remotive_real_salary_strings_parse():
@@ -86,7 +86,7 @@ def test_parse_arbeitnow_normalizes():
         assert j["title"] and j["company"] and j["url"]
         assert j["posted_at"]  # epoch -> YYYY-MM-DD
         assert isinstance(j["remote"], bool)
-    assert jobs[0]["company"] == "Webmatch GmbH"
+    assert jobs[0]["company"] == "TPnet Marktforschung"
 
 
 # ----------------------------------------------------------------- utils ---
